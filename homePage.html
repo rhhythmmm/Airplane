@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Easy Go - AMS Home</title>
+    <link rel="stylesheet" href="homeStyle.css" />
+  </head>
+  <body>
+    <div class="top-nav">
+      <div class="nav-left">
+        <a href="#" onclick="goHome()">Home</a>
+        <div class="dropdown">
+          <button class="dropbtn">My Profile ▼</button>
+          <div class="dropdown-content">
+            <a href="#" onclick="showProfile()">View / Edit Profile</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button class="dropbtn">My Trips ▼</button>
+          <div class="dropdown-content">
+            <a href="#" onclick="showUpcoming()">Upcoming</a>
+            <a href="#" onclick="showCancelled()">Cancelled</a>
+            <a href="#" onclick="showCompleted()">Completed</a>
+          </div>
+        </div>
+        <a href="#" onclick="logout()">Logout</a>
+      </div>
+      <div class="nav-right">
+        Welcome <span id="passengerName">Passenger</span>!!!
+      </div>
+    </div>
+
+    <h2 class="welcome-title">Welcome to Easy Go - AMS</h2>
+
+    <div class="search-bar">
+      <label
+        >From
+        <select id="origin">
+          <option>Chennai</option>
+          <option>Mumbai</option>
+          <option>Delhi</option>
+        </select>
+      </label>
+
+      <label
+        >To
+        <select id="destination">
+          <option>Bangalore</option>
+          <option>Hyderabad</option>
+          <option>Kolkata</option>
+        </select>
+      </label>
+
+      <label
+        >Departure Date
+        <input type="date" id="departure" />
+      </label>
+
+      <label
+        >No of Travellers
+        <input type="number" id="travellers" min="1" />
+      </label>
+
+      <label
+        >Class
+        <select id="travelClass">
+          <option>Economy</option>
+          <option>Executive</option>
+          <option>Business</option>
+        </select>
+      </label>
+
+      <button onclick="searchFlights()">Search</button>
+    </div>
+
+    <div id="tripDetails"></div>
+
+    <script src="homeScript.js"></script>
+  </body>
+</html>

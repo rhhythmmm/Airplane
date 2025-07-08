@@ -1,0 +1,79 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: teal;
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerTitle {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.loginBox {
+  width: 420px;
+  border: 2px solid white;
+  background: transparent;
+  backdrop-filter: blur(30px);
+  border-radius: 70px;
+  padding: 40px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  color: white;
+}
+
+.inputGroup {
+  margin-bottom: 20px;
+}
+
+.loginText {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.loginButton {
+  width: 100%;
+  padding: 10px;
+  background-color: #1cb5e0;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.loginButton:hover {
+  background-color: black;
+}
+
+.loginRedirect {
+  margin-top: 15px;
+  font-size: 0.85rem;
+}
+
+.loginRedirectLink {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.errorText {
+  color: #ffcccb;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-align: center;
+}

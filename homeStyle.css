@@ -1,0 +1,112 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: white;
+  color: black;
+}
+
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  background-color: teal;
+  padding: 10px 20px;
+  color: white;
+}
+
+.nav-left a,
+.dropbtn {
+  color: white;
+  padding: 8px 12px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.nav-left a:hover,
+.dropdown:hover .dropbtn {
+  background-color: #006666;
+}
+
+.dropdown {
+  display: inline-block;
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: teal;
+  min-width: 160px;
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: white;
+  padding: 10px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #004d4d;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.nav-right {
+  margin-top: 8px;
+  font-weight: bold;
+}
+
+.welcome-title {
+  background-color: teal;
+  color: white;
+  padding: 10px;
+  margin: 0;
+  text-align: center;
+  font-weight: bold;
+}
+
+.search-bar {
+  background-color: teal;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  color: white;
+}
+
+.search-bar label {
+  margin: 5px 10px;
+}
+
+.search-bar select,
+.search-bar input {
+  margin-left: 5px;
+  padding: 5px;
+  border-radius: 4px;
+  border: none;
+}
+
+.search-bar button {
+  margin-left: 10px;
+  padding: 6px 12px;
+  background-color: white;
+  color: teal;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.search-bar button:hover {
+  background-color: #006666;
+}
+
+#tripDetails {
+  margin: 20px;
+  text-align: center;
+  font-weight: bold;
+}

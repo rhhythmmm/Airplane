@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TCS Airlines - Login</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="loginStyle.css" />
+  </head>
+  <body>
+    <h1 class="headerTitle">TCS Airlines</h1>
+
+    <div class="loginBox">
+      <form id="loginForm">
+        <div id="errorMessage" class="errorText"></div>
+
+        <div class="inputGroup">
+          <label for="userId" class="loginText"
+            ><i class="bx bxs-user"></i> Username</label
+          >
+          <input type="text" id="userId" placeholder="Enter numeric ID" />
+        </div>
+
+        <div class="inputGroup">
+          <label for="password" class="loginText"
+            ><i class="bx bxs-lock"></i> Password</label
+          >
+          <input type="password" id="password" placeholder="Enter password" />
+        </div>
+
+        <button type="submit" class="loginButton">Login</button>
+
+        <p class="loginRedirect">
+          New User?
+          <a href="registerPage.html" class="loginRedirectLink"
+            >Register here</a
+          >
+        </p>
+      </form>
+    </div>
+
+    <script src="loginScript.js"></script>
+  </body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Passenger Registration</title>
+    <link rel="stylesheet" href="registerStyle.css" />
+  </head>
+  <body>
+    <h1 class="headerTitle">Passenger Registration</h1>
+
+    <div class="registerBox">
+      <form id="registerForm">
+        <div id="errorMessage" class="errorText"></div>
+
+        <input
+          type="text"
+          id="firstName"
+          placeholder="First Name (max 50 chars)"
+          maxlength="50"
+        />
+        <input
+          type="text"
+          id="lastName"
+          placeholder="Last Name (max 50 chars)"
+          maxlength="50"
+        />
+        <input type="date" id="dob" />
+        <input type="email" id="email" placeholder="Email ID" />
+        <textarea
+          id="address"
+          placeholder="Address (max 100 chars)"
+          maxlength="100"
+        ></textarea>
+        <input
+          type="text"
+          id="contact"
+          placeholder="Contact Number (10 digits)"
+          maxlength="10"
+        />
+
+        <div class="buttonGroup">
+          <button type="submit" class="registerBtn">Register</button>
+          <button type="button" class="resetBtn" onclick="confirmReset()">
+            Reset
+          </button>
+        </div>
+      </form>
+
+      <div id="successMessage" class="successText"></div>
+    </div>
+
+    <script src="registerScript.js"></script>
+  </body>
+</html>
