@@ -34,36 +34,38 @@
     <h2 class="welcome-title">Welcome to Easy Go - AMS</h2>
 
     <div class="search-bar">
-      <label
-        >From
+      <label>
+        From
         <select id="origin">
+          <option value="" disabled selected>Choose origin</option>
           <option>Chennai</option>
           <option>Mumbai</option>
           <option>Delhi</option>
         </select>
       </label>
 
-      <label
-        >To
+      <label>
+        To
         <select id="destination">
+          <option value="" disabled selected>Choose destination</option>
           <option>Bangalore</option>
           <option>Hyderabad</option>
           <option>Kolkata</option>
         </select>
       </label>
 
-      <label
-        >Departure Date
+      <label>
+        Departure Date
         <input type="date" id="departure" />
       </label>
 
-      <label
-        >No of Travellers
+      <label>
+        No of Travellers
         <input type="number" id="travellers" min="1" />
       </label>
 
-      <label
-        >Class
+      <label>
+        Class
         <select id="travelClass">
           <option>Economy</option>
           <option>Executive</option>
@@ -75,6 +77,31 @@
     </div>
 
     <div id="tripDetails"></div>
+
+    <div id="profileModal" class="modal">
+      <div class="modal-content">
+        <h2>My Profile</h2>
+        <div id="profileDetails"></div>
+        <button id="editBtn">Edit</button>
+
+        <div id="editFields" style="display: none">
+          <input type="text" id="editFirstName" placeholder="First Name" />
+          <input type="text" id="editLastName" placeholder="Last Name" />
+          <input type="date" id="editDob" />
+          <input type="email" id="editEmail" placeholder="Email" />
+          <textarea id="editAddress" placeholder="Address"></textarea>
+          <input
+            type="text"
+            id="editContact"
+            placeholder="Contact Number"
+            maxlength="10"
+          />
+          <button id="saveBtn">Save</button>
+        </div>
+
+        <button onclick="closeProfile()">Close</button>
+      </div>
+    </div>
 
     <script src="homeScript.js"></script>
   </body>

@@ -12,17 +12,17 @@ document
 
     const errorDiv = document.getElementById("errorMessage");
     const successDiv = document.getElementById("successMessage");
+    const loginLinkDiv = document.getElementById("loginLink");
 
     errorDiv.textContent = "";
     successDiv.textContent = "";
+    loginLinkDiv.innerHTML = "";
 
-    // 1. All fields required
     if (!fname || !lname || !dob || !email || !address || !contact) {
       errorDiv.textContent = "All fields are mandatory.";
       return;
     }
 
-    // 2. DOB validation
     const minDate = new Date("1924-01-01");
     const selectedDate = new Date(dob);
     if (selectedDate <= minDate) {
@@ -30,28 +30,43 @@ document
       return;
     }
 
-    // 3. Contact validation
     if (!/^\d{10}$/.test(contact)) {
       errorDiv.textContent = "Enter a valid contact number.";
       return;
     }
 
-    // 4. Email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       errorDiv.textContent = "Enter a valid mail id.";
       return;
     }
 
-    // 5. Generate Passenger ID and password
-    const passengerId = Math.floor(10000 + Math.random() * 90000); // 5-digit random number
+    const passengerId = Math.floor(10000 + Math.random() * 90000).toString();
     const password = fname.slice(0, 4).toLowerCase() + "@123";
 
+    const userData = {
+      passengerId: passengerId,
+      password: password,
+      firstName: fname,
+      lastName: lname,
+      dob: dob,
+      email: email,
+      address: address,
+      contact: contact,
+    };
+
+    localStorage.setItem("registeredUserData", JSON.stringify(userData));
+    localStorage.setItem("passengerName", fname);
+
     successDiv.innerHTML = `
-      Passenger Registration is successful.<br><br>
-      <strong>Passenger ID:</strong> ${passengerId}<br>
-      <strong>Password:</strong> ${password}
-    `;
+    <p>Passenger Registration is successful.</p>
+    <p><strong>Passenger ID:</strong> ${passengerId}</p>
+    <p><strong>Password:</strong> ${password}</p>
+  `;
+
+    loginLinkDiv.innerHTML = `
+    <a href="loginPage.html" class="loginRedirectLink">Click here to Login</a>
+  `;
   });
 
 function confirmReset() {
@@ -60,5 +75,6 @@ function confirmReset() {
     document.getElementById("registerForm").reset();
     document.getElementById("errorMessage").textContent = "";
     document.getElementById("successMessage").textContent = "";
+    document.getElementById("loginLink").innerHTML = "";
   }
 }
