@@ -1,259 +1,330 @@
 import java.util.*;
+import java.text.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
-    static Scanner sc = new Scanner(System.in);
-
     public static void main(String[] args) {
-        new Main().start();
+        new AirlineManagementSystem().start();
     }
+}
 
-    private Map<String, User> users = new HashMap<>();
-    private Map<String, Flight> flights = new HashMap<>();
-    private Map<String, List<Flight>> bookings = new HashMap<>();
-    private String currentUserId = null;
+class AirlineManagementSystem {
+    private Scanner sc = new Scanner(System.in);
+    private List<User> users = new ArrayList<>();
+    private List<Carrier> carriers = new ArrayList<>();
+    private List<Flight> flights = new ArrayList<>();
+    private List<Booking> bookings = new ArrayList<>();
 
-    private void start() {
+    private AtomicInteger userIdCounter = new AtomicInteger(2);
+    private AtomicInteger carrierIdCounter = new AtomicInteger(1);
+    private AtomicInteger bookingIdCounter = new AtomicInteger(1001);
+    private AtomicInteger flightIdCounter = new AtomicInteger(101);
+
+    public void start() {
+        // Prefilled Admin
+        users.add(new User(1, "admin", "admin123", "Admin", "", "", "", "", "", "", "", "", "Admin", "Gold", new Date()));
+        // Prefilled Flights
+        flights.add(new Flight(flightIdCounter.getAndIncrement(), "IndiGo", "Delhi", "Mumbai", "25-Aug-2025", 4500));
+        flights.add(new Flight(flightIdCounter.getAndIncrement(), "AirAsia", "Chennai", "Kolkata", "20-Aug-2025", 5000));
+        flights.add(new Flight(flightIdCounter.getAndIncrement(), "SpiceJet", "Bangalore", "Hyderabad", "15-Aug-2025", 3500));
+
         while (true) {
-            System.out.println("\n=== Airline Management System ===");
-            System.out.println("1. Register");
-            System.out.println("2. Login");
-            System.out.println("3. Exit");
-            System.out.print("Choose: ");
+            System.out.println("\n--- Airline Management System ---");
+            System.out.println("1. Admin Login");
+            System.out.println("2. Customer Login");
+            System.out.println("3. Admin Registration");
+            System.out.println("4. Customer Registration");
+            System.out.println("5. Exit");
+            System.out.print("Enter option: ");
             int choice = sc.nextInt();
             sc.nextLine();
 
             switch (choice) {
-                case 1: register(); break;
-                case 2: login(); break;
-                case 3: System.exit(0);
-                default: System.out.println("Invalid choice!");
+                case 1 -> adminLogin();
+                case 2 -> customerLogin();
+                case 3 -> register("Admin");
+                case 4 -> register("Customer");
+                case 5 -> {
+                    System.out.println("Thank you for using AMS.");
+                    return;
+                }
+                default -> System.out.println("Invalid option!");
             }
         }
     }
 
-    private void register() {
-        System.out.print("Enter ID: ");
-        String id = sc.nextLine();
-        System.out.print("Enter Password: ");
-        String pwd = sc.nextLine();
-        System.out.print("Enter Role (Admin/Customer): ");
-        String role = sc.nextLine();
-        System.out.print("Enter Name: ");
+    private void register(String role) {
+        System.out.println("\n--- " + role + " Registration ---");
+        int id = userIdCounter.getAndIncrement();
+        System.out.print("Enter UserName: ");
         String name = sc.nextLine();
+        System.out.print("Enter Password: ");
+        String pass = sc.nextLine();
+        System.out.print("Enter Phone: ");
+        String phone = sc.nextLine();
         System.out.print("Enter Email: ");
         String email = sc.nextLine();
-
-        if (users.containsKey(id)) {
-            System.out.println("User already exists!");
-            return;
+        System.out.print("Enter Address1: ");
+        String addr1 = sc.nextLine();
+        System.out.print("Enter Address2: ");
+        String addr2 = sc.nextLine();
+        System.out.print("Enter City: ");
+        String city = sc.nextLine();
+        System.out.print("Enter State: ");
+        String state = sc.nextLine();
+        System.out.print("Enter Country: ");
+        String country = sc.nextLine();
+        System.out.print("Enter ZipCode: ");
+        String zip = sc.nextLine();
+        System.out.print("Enter DOB (dd-MM-yyyy): ");
+        Date dob = null;
+        try {
+            dob = new SimpleDateFormat("dd-MM-yyyy").parse(sc.nextLine());
+        } catch (Exception e) {
+            System.out.println("Invalid date. Setting default date.");
+            dob = new Date();
         }
-
-        users.put(id, new User(id, pwd, role, name, email));
-        System.out.println("✅ Registered Successfully!");
+        users.add(new User(id, name, pass, role, phone, email, addr1, addr2, city, state, country, zip, role, "", dob));
+        System.out.println(role + " Registered successfully! Your ID: " + id);
     }
 
-    private void login() {
-        System.out.print("Enter ID: ");
-        String id = sc.nextLine();
-        System.out.print("Enter Password: ");
-        String pwd = sc.nextLine();
-
-        if (!users.containsKey(id) || !users.get(id).password.equals(pwd)) {
-            System.out.println("❌ Invalid credentials.");
-            return;
-        }
-
-        currentUserId = id;
-        System.out.println("✅ Login Successful!");
-
-        if (users.get(id).role.equalsIgnoreCase("Admin")) {
-            adminMenu();
-        } else {
-            customerMenu();
-        }
+    private void adminLogin() {
+        System.out.println("\n--- Admin Login ---");
+        login("Admin");
     }
 
-    private void adminMenu() {
-        while (true) {
-            System.out.println("\n--- Admin Menu ---");
-            System.out.println("1. Add Flight");
-            System.out.println("2. View Flights");
-            System.out.println("3. Cancel Flight (System-wide)");
-            System.out.println("4. Logout");
-            System.out.print("Choose: ");
-            int ch = sc.nextInt();
-            sc.nextLine();
-
-            switch (ch) {
-                case 1: addFlight(); break;
-                case 2: viewFlights(); break;
-                case 3: cancelFlightSystemWide(); break;
-                case 4: currentUserId = null; return;
-                default: System.out.println("Invalid choice!");
-            }
-        }
+    private void customerLogin() {
+        System.out.println("\n--- Customer Login ---");
+        login("Customer");
     }
 
-    private void customerMenu() {
-        while (true) {
-            System.out.println("\n--- Customer Menu ---");
-            System.out.println("1. View Flights");
-            System.out.println("2. Book Flight");
-            System.out.println("3. View Bookings");
-            System.out.println("4. Cancel Booking");
-            System.out.println("5. Edit Profile");
-            System.out.println("6. Logout");
-            System.out.print("Choose: ");
-            int ch = sc.nextInt();
-            sc.nextLine();
-
-            switch (ch) {
-                case 1: viewFlights(); break;
-                case 2: bookFlight(); break;
-                case 3: viewBookings(); break;
-                case 4: cancelBooking(); break;
-                case 5: editProfile(); break;
-                case 6: currentUserId = null; return;
-                default: System.out.println("Invalid choice!");
-            }
-        }
-    }
-
-    private void addFlight() {
-        System.out.print("Enter Flight ID: ");
-        String id = sc.nextLine();
-        System.out.print("From: ");
-        String from = sc.nextLine();
-        System.out.print("To: ");
-        String to = sc.nextLine();
-        System.out.print("Date (YYYY-MM-DD): ");
-        String date = sc.nextLine();
-        System.out.print("Price: ");
-        double price = sc.nextDouble();
+    private void login(String role) {
+        System.out.print("Enter User ID: ");
+        int id = sc.nextInt();
         sc.nextLine();
+        System.out.print("Enter Password: ");
+        String pass = sc.nextLine();
 
-        if (flights.containsKey(id)) {
-            System.out.println("Flight already exists!");
-            return;
+        for (User u : users) {
+            if (u.id == id && u.password.equals(pass) && u.role.equals(role)) {
+                System.out.println("Welcome, " + u.name + "!");
+                if (role.equals("Admin")) adminMenu(u);
+                else customerMenu(u);
+                return;
+            }
         }
-
-        flights.put(id, new Flight(id, from, to, date, price));
-        System.out.println("✅ Flight added successfully!");
+        System.out.println("Invalid ID or Password");
     }
 
-    private void viewFlights() {
-        if (flights.isEmpty()) {
-            System.out.println("❗ No flights available.");
-            return;
-        }
-        System.out.println("\n🛫 Available Flights:");
-        for (Flight f : flights.values()) {
-            System.out.println(f);
-        }
-    }
+    private void adminMenu(User admin) {
+        while (true) {
+            System.out.println("\nAdmin Menu:");
+            System.out.println("1. Add Carrier");
+            System.out.println("2. Edit Carrier");
+            System.out.println("3. Delete Carrier");
+            System.out.println("4. Flight Cancellation Refund");
+            System.out.println("5. Exit");
+            System.out.print("Enter option: ");
+            int op = sc.nextInt();
+            sc.nextLine();
 
-    private void cancelFlightSystemWide() {
-        System.out.print("Enter Flight ID to cancel: ");
-        String id = sc.nextLine();
-
-        if (!flights.containsKey(id)) {
-            System.out.println("Flight not found!");
-            return;
-        }
-
-        flights.remove(id);
-
-        for (List<Flight> list : bookings.values()) {
-            list.removeIf(f -> f.id.equals(id));
-        }
-
-        System.out.println("✅ Flight cancelled for all users.");
-    }
-
-    private void bookFlight() {
-        System.out.print("Enter Flight ID to book: ");
-        String id = sc.nextLine();
-
-        if (!flights.containsKey(id)) {
-            System.out.println("❌ Invalid flight ID.");
-            return;
-        }
-
-        bookings.putIfAbsent(currentUserId, new ArrayList<>());
-        bookings.get(currentUserId).add(flights.get(id));
-        System.out.println("✅ Flight booked successfully!");
-    }
-
-    private void viewBookings() {
-        List<Flight> userBookings = bookings.getOrDefault(currentUserId, new ArrayList<>());
-        if (userBookings.isEmpty()) {
-            System.out.println("❗ No bookings found.");
-        } else {
-            System.out.println("\n📄 Your Bookings:");
-            for (Flight f : userBookings) {
-                System.out.println(f);
+            switch (op) {
+                case 1 -> addCarrier();
+                case 2 -> editCarrier();
+                case 3 -> deleteCarrier();
+                case 4 -> System.out.println("Flight cancellation refund to be implemented.");
+                case 5 -> { return; }
+                default -> System.out.println("Invalid option");
             }
         }
     }
 
-    private void cancelBooking() {
-        List<Flight> userBookings = bookings.get(currentUserId);
-        if (userBookings == null || userBookings.isEmpty()) {
-            System.out.println("❗ No bookings found.");
+    private void customerMenu(User user) {
+        while (true) {
+            System.out.println("\nCustomer Menu:");
+            System.out.println("1. Edit Profile");
+            System.out.println("2. Book Ticket");
+            System.out.println("3. Cancel Ticket");
+            System.out.println("4. Exit");
+            System.out.print("Enter option: ");
+            int op = sc.nextInt();
+            sc.nextLine();
+            switch (op) {
+                case 1 -> editProfile(user);
+                case 2 -> bookTicket(user);
+                case 3 -> cancelTicket(user);
+                case 4 -> { return; }
+                default -> System.out.println("Invalid option");
+            }
+        }
+    }
+
+    private void editProfile(User user) {
+        while (true) {
+            System.out.println("\nEdit Profile Menu:");
+            System.out.println("1. Edit Phone");
+            System.out.println("2. Edit Email");
+            System.out.println("3. Edit Address1");
+            System.out.println("4. Exit");
+            System.out.print("Choose: ");
+            int op = sc.nextInt();
+            sc.nextLine();
+
+            switch (op) {
+                case 1 -> {
+                    System.out.print("New Phone: ");
+                    user.phone = sc.nextLine();
+                }
+                case 2 -> {
+                    System.out.print("New Email: ");
+                    user.email = sc.nextLine();
+                }
+                case 3 -> {
+                    System.out.print("New Address1: ");
+                    user.address1 = sc.nextLine();
+                }
+                case 4 -> { return; }
+            }
+            System.out.println("Profile Updated: " + user);
+        }
+    }
+
+    private void addCarrier() {
+        System.out.print("Carrier Name: ");
+        String name = sc.nextLine();
+        int id = carrierIdCounter.getAndIncrement();
+        carriers.add(new Carrier(id, name));
+        System.out.println("Carrier added: " + name);
+    }
+
+    private void editCarrier() {
+        System.out.print("Carrier ID: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+        for (Carrier c : carriers) {
+            if (c.id == id) {
+                System.out.print("New Name: ");
+                c.name = sc.nextLine();
+                System.out.println("Carrier updated: " + c.name);
+                return;
+            }
+        }
+        System.out.println("Carrier not found.");
+    }
+
+    private void deleteCarrier() {
+        System.out.print("Carrier ID: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+        carriers.removeIf(c -> c.id == id);
+        System.out.println("Carrier deleted.");
+    }
+
+    private void bookTicket(User user) {
+        System.out.println("\nAvailable Flights:");
+        for (Flight f : flights)
+            System.out.println(f.id + " | " + f.carrier + " | " + f.from + " -> " + f.to + " | " + f.date + " | ₹" + f.fare);
+
+        System.out.print("Enter Flight ID: ");
+        int fid = sc.nextInt();
+        sc.nextLine();
+        Flight chosen = null;
+        for (Flight f : flights) {
+            if (f.id == fid) {
+                chosen = f;
+                break;
+            }
+        }
+        if (chosen == null) {
+            System.out.println("Invalid flight ID");
             return;
         }
 
-        System.out.print("Enter Flight ID to cancel: ");
-        String id = sc.nextLine();
+        System.out.print("Enter ticket count: ");
+        int count = sc.nextInt();
+        sc.nextLine();
+        System.out.print("Enter Seat Category (Economy/Business/Executive): ");
+        String seat = sc.nextLine();
+        double baseFare = chosen.fare;
+        if (seat.equalsIgnoreCase("Business")) baseFare *= 2;
+        else if (seat.equalsIgnoreCase("Executive")) baseFare *= 5;
 
-        boolean removed = userBookings.removeIf(f -> f.id.equals(id));
-        if (removed) {
-            System.out.println("✅ Booking cancelled.");
-        } else {
-            System.out.println("❌ Booking not found.");
+        double total = baseFare * count;
+        // Apply dummy discount (could add booking date logic here)
+        if (count >= 10) total *= 0.98;
+        switch (user.userCategory) {
+            case "Silver" -> total *= 0.99;
+            case "Gold" -> total *= 0.98;
+            case "Platinum" -> total *= 0.96;
+        }
+
+        int bid = bookingIdCounter.getAndIncrement();
+        bookings.add(new Booking(bid, user.id, fid, count, total));
+        System.out.println("Booking confirmed! Amount: ₹" + total + ", Booking ID: " + bid);
+    }
+
+    private void cancelTicket(User user) {
+        System.out.print("Enter Booking ID to cancel: ");
+        int bid = sc.nextInt();
+        sc.nextLine();
+        Booking found = null;
+        for (Booking b : bookings) {
+            if (b.id == bid && b.userId == user.id) {
+                found = b;
+                break;
+            }
+        }
+        if (found == null) {
+            System.out.println("Booking not found.");
+            return;
+        }
+        double refund = found.amount * 0.95;
+        System.out.println("Booking cancelled. Refund amount: ₹" + refund);
+        bookings.remove(found);
+    }
+
+    // Classes
+    static class User {
+        int id;
+        String name, password, role;
+        String phone, email, address1, address2, city, state, country, zip, userCategory;
+        Date dob;
+
+        public User(int id, String name, String pass, String role, String phone, String email, String addr1, String addr2, String city, String state, String country, String zip, String roleDup, String userCategory, Date dob) {
+            this.id = id; this.name = name; this.password = pass; this.role = role;
+            this.phone = phone; this.email = email; this.address1 = addr1; this.address2 = addr2;
+            this.city = city; this.state = state; this.country = country; this.zip = zip;
+            this.userCategory = userCategory; this.dob = dob;
+        }
+
+        public String toString() {
+            return id + " | " + name + " | " + phone + " | " + email + " | " + address1 + " | " + role;
         }
     }
 
-    private void editProfile() {
-        User u = users.get(currentUserId);
-        System.out.println("Current Name: " + u.name);
-        System.out.print("New Name: ");
-        u.name = sc.nextLine();
-
-        System.out.println("Current Email: " + u.email);
-        System.out.print("New Email: ");
-        u.email = sc.nextLine();
-
-        System.out.println("✅ Profile updated!");
-    }
-
-    // Inner classes
-    static class User {
-        String id, password, role, name, email;
-
-        public User(String id, String password, String role, String name, String email) {
+    static class Carrier {
+        int id;
+        String name;
+        public Carrier(int id, String name) {
             this.id = id;
-            this.password = password;
-            this.role = role;
             this.name = name;
-            this.email = email;
         }
     }
 
     static class Flight {
-        String id, from, to, date;
-        double price;
-
-        public Flight(String id, String from, String to, String date, double price) {
-            this.id = id;
-            this.from = from;
-            this.to = to;
-            this.date = date;
-            this.price = price;
+        int id;
+        String carrier, from, to, date;
+        double fare;
+        public Flight(int id, String carrier, String from, String to, String date, double fare) {
+            this.id = id; this.carrier = carrier; this.from = from; this.to = to; this.date = date; this.fare = fare;
         }
+    }
 
-        public String toString() {
-            return id + ": " + from + " → " + to + " on " + date + " | ₹" + price;
+    static class Booking {
+        int id, userId, flightId, count;
+        double amount;
+        public Booking(int id, int uid, int fid, int count, double amt) {
+            this.id = id; this.userId = uid; this.flightId = fid; this.count = count; this.amount = amt;
         }
     }
 }
