@@ -1,0 +1,89 @@
+#!/bin/bash
+
+# File: airline.sh
+
+REGISTER_FILE="register.txt"
+FLIGHT_FILE="flights.txt"
+
+# Initialize files if they don't exist
+touch "$REGISTER_FILE"
+touch "$FLIGHT_FILE"
+
+function register_passenger() {
+    echo "Enter First Name:"
+    read fname
+    echo "Enter Last Name:"
+    read lname
+    echo "Enter DOB (dd-mm-yyyy):"
+    read dob
+    echo "Enter Email ID:"
+    read email
+    echo "Enter Contact No:"
+    read contact
+
+    echo "$fname|$lname|$dob|$email|$contact" >> "$REGISTER_FILE"
+    echo "Passenger registered successfully."
+}
+
+function save_flights() {
+    echo "Saving sample flight data to $FLIGHT_FILE..."
+    cat <<EOL > "$FLIGHT_FILE"
+SpiceJet757|CHN|HYD|3Jan|10000
+AkasaAir123|DEL|BGL|3Jan|9000
+Indigo667|DEL|HYD|3Jan|13000
+AIRIndia667|DEL|HYD|3Jan|16000
+EOL
+    echo "Flight data saved."
+}
+
+function search_flights() {
+    echo "Enter From location:"
+    read from
+    echo "Enter To location:"
+    read to
+    echo "Enter Travel Date (e.g., 3Jan):"
+    read tdate
+
+    echo "Matching Flights:"
+    grep "|$from|$to|$tdate|" "$FLIGHT_FILE"
+}
+
+function sort_flights_by_price() {
+    echo "Flights sorted by price (descending):"
+    sort -t'|' -k5 -nr "$FLIGHT_FILE"
+}
+
+function fetch_flights_by_destination() {
+    echo "Enter Destination:"
+    read dest
+    echo "Flights to $dest:"
+    awk -F"|" -v d="$dest" '$3 == d' "$FLIGHT_FILE"
+}
+
+function menu() {
+    echo "----- Airline Management System -----"
+    echo "1. Register Passenger"
+    echo "2. Save Sample Flights"
+    echo "3. Search Flights (From, To, Date)"
+    echo "4. View Flights Sorted by Price"
+    echo "5. Fetch Flights by Destination"
+    echo "6. Exit"
+    echo "Choose an option:"
+    read choice
+
+    case $choice in
+        1) register_passenger ;;
+        2) save_flights ;;
+        3) search_flights ;;
+        4) sort_flights_by_price ;;
+        5) fetch_flights_by_destination ;;
+        6) exit ;;
+        *) echo "Invalid choice" ;;
+    esac
+}
+
+# Run the menu in a loop
+while true; do
+    menu
+    echo
+done
