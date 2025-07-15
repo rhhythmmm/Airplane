@@ -15,10 +15,11 @@ class AirlineManagementSystem {
     private List<Flight> flights = new ArrayList<>();
     private List<Booking> bookings = new ArrayList<>();
 
-    private AtomicInteger userIdCounter = new AtomicInteger(2);
-    private AtomicInteger carrierIdCounter = new AtomicInteger(1);
-    private AtomicInteger bookingIdCounter = new AtomicInteger(1001);
-    private AtomicInteger flightIdCounter = new AtomicInteger(101);
+    private AtomicInteger userIdCounter = new AtomicInteger(10000);       // Starts from 5-digit ID
+    private AtomicInteger carrierIdCounter = new AtomicInteger(20000);    // Optional: 5-digit Carrier ID
+    private AtomicInteger bookingIdCounter = new AtomicInteger(30000);    // Optional: 5-digit Booking ID
+    private AtomicInteger flightIdCounter = new AtomicInteger(40000);     // Optional: 5-digit Flight ID
+
 
     public void start() {
         // Prefilled Admin
@@ -189,28 +190,78 @@ class AirlineManagementSystem {
         }
     }
 
-    private void addCarrier() {
-        System.out.print("Carrier Name: ");
-        String name = sc.nextLine();
-        int id = carrierIdCounter.getAndIncrement();
-        carriers.add(new Carrier(id, name));
-        System.out.println("Carrier added: " + name);
-    }
+private void addCarrier() {
+    System.out.print("Carrier Name: ");
+    String name = sc.nextLine();
+    System.out.print("Discount for 30 Days Advance Booking (%): ");
+    int d30 = sc.nextInt();
+    System.out.print("Discount for 60 Days Advance Booking (%): ");
+    int d60 = sc.nextInt();
+    System.out.print("Discount for 90 Days Advance Booking (%): ");
+    int d90 = sc.nextInt();
+    System.out.print("Bulk Booking Discount (%): ");
+    int bulk = sc.nextInt();
+    System.out.print("Refund if cancelled within 2 days (%): ");
+    int r2 = sc.nextInt();
+    System.out.print("Refund if cancelled within 10 days (%): ");
+    int r10 = sc.nextInt();
+    System.out.print("Refund if cancelled 20+ days before (%): ");
+    int r20 = sc.nextInt();
+    System.out.print("Silver User Discount (%): ");
+    int silver = sc.nextInt();
+    System.out.print("Gold User Discount (%): ");
+    int gold = sc.nextInt();
+    System.out.print("Platinum User Discount (%): ");
+    int platinum = sc.nextInt();
+    sc.nextLine(); // Consume newline
 
-    private void editCarrier() {
-        System.out.print("Carrier ID: ");
-        int id = sc.nextInt();
-        sc.nextLine();
-        for (Carrier c : carriers) {
-            if (c.id == id) {
-                System.out.print("New Name: ");
-                c.name = sc.nextLine();
-                System.out.println("Carrier updated: " + c.name);
-                return;
-            }
+    int id = carrierIdCounter.getAndIncrement();
+    Carrier c = new Carrier(id, name, d30, d60, d90, bulk, r2, r10, r20, silver, gold, platinum);
+    carriers.add(c);
+    System.out.println("Carrier Information Saved Successfully in the System. ID: " + id);
+}
+
+private void editCarrier() {
+    System.out.print("Enter Carrier ID to edit: ");
+    int id = sc.nextInt();
+    sc.nextLine();
+    for (Carrier c : carriers) {
+        if (c.id == id) {
+            System.out.println("Current Carrier Info:\n" + c);
+
+            System.out.print("New Carrier Name (" + c.name + "): ");
+            String name = sc.nextLine();
+            c.name = name.isEmpty() ? c.name : name;
+
+            System.out.print("Discount for 30 Days (" + c.discount30 + "): ");
+            c.discount30 = sc.nextLine().trim().isEmpty() ? c.discount30 : sc.nextInt();
+            System.out.print("Discount for 60 Days (" + c.discount60 + "): ");
+            c.discount60 = sc.nextLine().trim().isEmpty() ? c.discount60 : sc.nextInt();
+            System.out.print("Discount for 90 Days (" + c.discount90 + "): ");
+            c.discount90 = sc.nextLine().trim().isEmpty() ? c.discount90 : sc.nextInt();
+            System.out.print("Bulk Booking Discount (" + c.bulkDiscount + "): ");
+            c.bulkDiscount = sc.nextLine().trim().isEmpty() ? c.bulkDiscount : sc.nextInt();
+            System.out.print("Refund 2 Days (" + c.refund2Days + "): ");
+            c.refund2Days = sc.nextLine().trim().isEmpty() ? c.refund2Days : sc.nextInt();
+            System.out.print("Refund 10 Days (" + c.refund10Days + "): ");
+            c.refund10Days = sc.nextLine().trim().isEmpty() ? c.refund10Days : sc.nextInt();
+            System.out.print("Refund 20+ Days (" + c.refund20Days + "): ");
+            c.refund20Days = sc.nextLine().trim().isEmpty() ? c.refund20Days : sc.nextInt();
+            System.out.print("Silver Discount (" + c.silverDiscount + "): ");
+            c.silverDiscount = sc.nextLine().trim().isEmpty() ? c.silverDiscount : sc.nextInt();
+            System.out.print("Gold Discount (" + c.goldDiscount + "): ");
+            c.goldDiscount = sc.nextLine().trim().isEmpty() ? c.goldDiscount : sc.nextInt();
+            System.out.print("Platinum Discount (" + c.platinumDiscount + "): ");
+            c.platinumDiscount = sc.nextLine().trim().isEmpty() ? c.platinumDiscount : sc.nextInt();
+
+            sc.nextLine(); // Clean buffer
+            System.out.println("Carrier updated successfully.");
+            return;
         }
-        System.out.println("Carrier not found.");
     }
+    System.out.println("Carrier not found with ID: " + id);
+}
+
 
     private void deleteCarrier() {
         System.out.print("Carrier ID: ");
@@ -302,14 +353,45 @@ class AirlineManagementSystem {
         }
     }
 
-    static class Carrier {
-        int id;
-        String name;
-        public Carrier(int id, String name) {
-            this.id = id;
-            this.name = name;
-        }
+// Update Carrier class
+static class Carrier {
+    int id;
+    String name;
+    int discount30, discount60, discount90, bulkDiscount;
+    int refund2Days, refund10Days, refund20Days;
+    int silverDiscount, goldDiscount, platinumDiscount;
+
+    public Carrier(int id, String name, int discount30, int discount60, int discount90,
+                   int bulkDiscount, int refund2Days, int refund10Days, int refund20Days,
+                   int silverDiscount, int goldDiscount, int platinumDiscount) {
+        this.id = id;
+        this.name = name;
+        this.discount30 = discount30;
+        this.discount60 = discount60;
+        this.discount90 = discount90;
+        this.bulkDiscount = bulkDiscount;
+        this.refund2Days = refund2Days;
+        this.refund10Days = refund10Days;
+        this.refund20Days = refund20Days;
+        this.silverDiscount = silverDiscount;
+        this.goldDiscount = goldDiscount;
+        this.platinumDiscount = platinumDiscount;
     }
+
+    public String toString() {
+        return "CarrierID: " + id + "\nCarrierName: " + name +
+               "\n30 Days Discount: " + discount30 + "%" +
+               "\n60 Days Discount: " + discount60 + "%" +
+               "\n90 Days Discount: " + discount90 + "%" +
+               "\nBulk Booking Discount: " + bulkDiscount + "%" +
+               "\nRefund (2 days): " + refund2Days + "%" +
+               "\nRefund (10 days): " + refund10Days + "%" +
+               "\nRefund (20+ days): " + refund20Days + "%" +
+               "\nSilver Discount: " + silverDiscount + "%" +
+               "\nGold Discount: " + goldDiscount + "%" +
+               "\nPlatinum Discount: " + platinumDiscount + "%";
+    }
+}
 
     static class Flight {
         int id;
